@@ -1,0 +1,63 @@
+# RepoEvolutionBench with a real model writing the patch (DECISIONS D-026).
+# RepoEvolutionBench: eight multi-session software-engineering scenarios graded by unit tests.
+# This is the configuration behind RQ2's downstream-action evidence.
+name: repo_evolution_openai
+description: >
+  Eight scenarios in which a project decision is made and later changed. At the final checkpoint
+  the agent must patch a repository using the project's current decision; grading is the
+  repository's own pytest suite, with no judge model anywhere in the loop.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations:
+  - abl_no_supersession
+  - abl_no_tombstones
+
+workload:
+  name: repo_evolution
+  version: v1
+
+model:
+  provider: openai
+  identifier: gpt-5-mini
+  # gpt-5-mini accepts only its default temperature (1); the provider sends none to it.
+  temperature: 1.0
+  # Reasoning tokens count against this budget before any content is emitted.
+  max_output_tokens: 6000
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 512
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.50, 1.00]
+seeds: [1]
+repetitions: 1
+
+cost:
+  limit_usd: 2.00
+  pricing_file: configs/pricing.example.yaml
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Same scenarios as configs/repo_evolution.yaml, but gpt-5-mini reads the evidence and writes the
+  file edit itself (prompt coding_v2), instead of the deterministic reader filling a template.
+  The coding tasks are controlled probes of whether current project state reached the patch, not
+  a general software-engineering benchmark; every edit is deliberately small so a failure is
+  attributable to memory rather than to coding ability.

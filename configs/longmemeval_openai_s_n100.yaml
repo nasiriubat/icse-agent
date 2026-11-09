@@ -1,0 +1,75 @@
+# LongMemEval S split (full history with distractor sessions) against a real model. Identical to
+# configs/longmemeval_openai_n100.yaml except for the subset: the same 100 questions, now with
+# the benchmark's haystack sessions ingested, so every backend must find the evidence inside
+# roughly 115k tokens of history instead of the 1.9 evidence sessions of the oracle split.
+#
+# Requires, in .env or the shell:
+#   OPENAI_API_KEY=...
+#   ALLOW_PAID_RUNS=true
+#   MAX_EXPERIMENT_COST_USD=2        (or more; the run is refused above this)
+#
+# Always dry-run first — it prints the estimate and spends nothing:
+#   uv run memcheck run --config configs/longmemeval_openai_s_n100.yaml --dry-run
+name: longmemeval_openai_s_n100
+description: >
+  Four backends on the LongMemEval S split: the same 100 questions as longmemeval_openai_n100,
+  with the distractor haystack sessions ingested. The adapter maps LongMemEval question types
+  onto MemCheck's categories (single-session extraction, cross-session reasoning, temporal
+  reasoning, knowledge updates, abstention).
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations: []
+
+workload:
+  name: longmemeval
+  version: v1
+  subset: s
+  data_path: data/raw
+  params:
+    limit: 100
+
+model:
+  provider: openai
+  identifier: gpt-5-mini
+  temperature: 0.0
+  # gpt-5 reasoning tokens are charged against this budget before any content is emitted. At 256
+  # the reasoning consumed all of it and 47% of completions came back empty, so this must be
+  # generous even though the answers themselves are a few tokens long.
+  max_output_tokens: 4000
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 512
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.25, 0.50, 1.00]
+seeds: [1, 2, 3]
+repetitions: 1
+
+cost:
+  # The judge adds one call per answered query, so budget for roughly double the answer cost.
+  limit_usd: 3.00
+  pricing_file: configs/pricing.example.yaml
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Results from this run are NOT comparable with the mock-provider runs and the fairness validator
+  will refuse to pool them, correctly: the reader differs. They are also a different workload
+  from the oracle-split run (subset differs), so the two are reported side by side, not pooled.

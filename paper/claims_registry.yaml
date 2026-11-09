@@ -1,0 +1,1134 @@
+version: '2'
+claims:
+- claim_id: C001
+  claim_text: Contract pass rate for the guarded memory layer on the large store.
+  status: supported
+  research_question: RQ1
+  metric: contract_pass_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: reliability.csv
+  source_rows: variant=guarded_memory, fault=none
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reliability
+  statistical_test: null
+  value_column: contract_pass_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+  value_format: '{:.3f}'
+  notes: 18 evaluations (6 contracts x 3 seeds) per fault setting; all pass.
+- claim_id: C002
+  claim_text: Contract pass rate for the transcript-chunking baseline on the large store.
+  status: supported
+  research_question: RQ1
+  metric: contract_pass_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: reliability.csv
+  source_rows: variant=transcript_rag, fault=none
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reliability
+  statistical_test: null
+  value_column: contract_pass_rate
+  value_filter:
+    variant: transcript_rag
+    fault: none
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C010
+  claim_text: Guarded memory accuracy at the full large store.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n = 432.
+- claim_id: C011
+  claim_text: Transcript-chunking accuracy at the full large store.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Non-overlapping Wilson interval with C010; contrast with C020/C021 at the small store.
+- claim_id: C012
+  claim_text: Transcript-chunking stale-memory error rate on the large store.
+  status: supported
+  research_question: RQ2
+  metric: stale_memory_error_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: stale_memory_error_rate
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C013
+  claim_text: Guarded memory stale-memory error rate on the large store.
+  status: supported
+  research_question: RQ2
+  metric: stale_memory_error_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: stale_memory_error_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C014
+  claim_text: Transcript-chunking deletion leakage rate on the large store.
+  status: supported
+  research_question: RQ2
+  metric: deletion_leakage_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: deletion_leakage_rate
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C015
+  claim_text: Guarded memory deletion leakage rate on the large store.
+  status: supported
+  research_question: RQ2
+  metric: deletion_leakage_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: deletion_leakage_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C016
+  claim_text: Full-history replay accuracy on the large store.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=full_history, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: full_history
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C017
+  claim_text: No-memory accuracy on the large store.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=no_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: no_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C020
+  claim_text: Guarded memory accuracy at the full small store.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - smoke_20261103T144207Z_34d2f24b
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n = 201.
+- claim_id: C021
+  claim_text: 'Transcript-chunking accuracy at the full small store: identical to C020.'
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - smoke_20261103T144207Z_34d2f24b
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 'The early-warning observation: equal accuracy, unequal correctness. See C022.'
+- claim_id: C022
+  claim_text: Transcript-chunking deletion leakage on the small store, where accuracy was tied.
+  status: supported
+  research_question: RQ2
+  metric: deletion_leakage_rate
+  run_ids:
+  - smoke_20261103T144207Z_34d2f24b
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: deletion_leakage_rate
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C023
+  claim_text: Guarded memory deletion leakage on the small store.
+  status: supported
+  research_question: RQ2
+  metric: deletion_leakage_rate
+  run_ids:
+  - smoke_20261103T144207Z_34d2f24b
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: deletion_leakage_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C030
+  claim_text: Accuracy with the storage-layer tenant predicate disabled.
+  status: supported
+  research_question: RQ3
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_tenant_filter, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory+abl_no_tenant_filter
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C031
+  claim_text: Accuracy with supersession disabled.
+  status: supported
+  research_question: RQ3
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_supersession, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory+abl_no_supersession
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C032
+  claim_text: Stale-memory error rate with supersession disabled.
+  status: supported
+  research_question: RQ3
+  metric: stale_memory_error_rate
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_supersession, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: null
+  value_column: stale_memory_error_rate
+  value_filter:
+    variant: guarded_memory+abl_no_supersession
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C033
+  claim_text: 'Accuracy with tombstones disabled: unchanged from C010.'
+  status: supported
+  research_question: RQ3
+  metric: accuracy
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_tombstones, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory+abl_no_tombstones
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Unchanged accuracy alongside 42 critical deletion-closure violations.
+- claim_id: C040
+  claim_text: Mean injected memory tokens per answer, guarded memory, large store.
+  status: supported
+  research_question: RQ4
+  metric: injected_tokens_mean
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: injected_tokens_mean
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.1f}'
+  notes: ''
+- claim_id: C041
+  claim_text: Mean injected memory tokens, transcript chunking.
+  status: supported
+  research_question: RQ4
+  metric: injected_tokens_mean
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: injected_tokens_mean
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.1f}'
+  notes: ''
+- claim_id: C042
+  claim_text: Mean injected memory tokens with the evidence budget disabled.
+  status: supported
+  research_question: RQ4
+  metric: injected_tokens_mean
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory+abl_no_budget, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: injected_tokens_mean
+  value_filter:
+    variant: guarded_memory+abl_no_budget
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.1f}'
+  notes: ''
+- claim_id: C043
+  claim_text: p95 retrieval latency, guarded memory, large store.
+  status: supported
+  research_question: RQ4
+  metric: latency_p95_ms_retrieval
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: latency_p95_ms_retrieval
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C044
+  claim_text: p95 retrieval latency, transcript chunking.
+  status: supported
+  research_question: RQ4
+  metric: latency_p95_ms_retrieval
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: latency_p95_ms_retrieval
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C045
+  claim_text: p95 ingestion latency, guarded memory.
+  status: supported
+  research_question: RQ4
+  metric: latency_p95_ms_ingestion
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: latency_p95_ms_ingestion
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C046
+  claim_text: p95 ingestion latency, transcript chunking.
+  status: supported
+  research_question: RQ4
+  metric: latency_p95_ms_ingestion
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: latency_p95_ms_ingestion
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C047
+  claim_text: Database size, guarded memory, large store.
+  status: supported
+  research_question: RQ4
+  metric: database_size_bytes
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: storage_growth.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::storage_growth
+  statistical_test: null
+  value_column: database_size_bytes
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:,.0f}'
+  notes: ''
+- claim_id: C048
+  claim_text: Database size, transcript chunking.
+  status: supported
+  research_question: RQ4
+  metric: database_size_bytes
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: storage_growth.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::storage_growth
+  statistical_test: null
+  value_column: database_size_bytes
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:,.0f}'
+  notes: ''
+- claim_id: C049
+  claim_text: Retrieval index size, guarded memory.
+  status: supported
+  research_question: RQ4
+  metric: index_size_bytes
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: storage_growth.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::storage_growth
+  statistical_test: null
+  value_column: index_size_bytes
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:,.0f}'
+  notes: ''
+- claim_id: C050
+  claim_text: Retrieval index size, transcript chunking.
+  status: supported
+  research_question: RQ4
+  metric: index_size_bytes
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: storage_growth.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::storage_growth
+  statistical_test: null
+  value_column: index_size_bytes
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:,.0f}'
+  notes: ''
+- claim_id: C051
+  claim_text: Monetary cost of the reported experiments.
+  status: supported
+  research_question: RQ4
+  metric: estimated_cost_usd
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: estimated_cost_usd
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.2f}'
+  notes: 'Zero by construction: every reported run used the free deterministic reader.'
+- claim_id: C060
+  claim_text: Coding task success, guarded memory, unit-test graded.
+  status: supported
+  research_question: RQ2
+  metric: coding_task_success
+  run_ids:
+  - repo_evolution_20261103T145036Z_e95bae10
+  source_file: coding_outcomes.csv
+  source_rows: variant=guarded_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::coding_outcomes
+  statistical_test: Wilson score interval, 95%
+  value_column: coding_task_success
+  value_filter:
+    variant: guarded_memory
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n = 24.
+- claim_id: C061
+  claim_text: Coding task success, full-history replay.
+  status: supported
+  research_question: RQ2
+  metric: coding_task_success
+  run_ids:
+  - repo_evolution_20261103T145036Z_e95bae10
+  source_file: coding_outcomes.csv
+  source_rows: variant=full_history, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::coding_outcomes
+  statistical_test: Wilson score interval, 95%
+  value_column: coding_task_success
+  value_filter:
+    variant: full_history
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Failure mode was abstention; stale-value rate 0.000.
+- claim_id: C070
+  claim_text: LongMemEval accuracy, identical for every backend under the oracle reader.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_20260814T055917Z_4a0a16b6
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 'All four backends score this value. See C071: the reader, not memory, is the constraint.'
+- claim_id: C071
+  claim_text: 'Reader saturation on LongMemEval: the reader declined despite evidence.'
+  status: supported
+  research_question: RQ2
+  metric: reader_saturation
+  run_ids:
+  - longmemeval_20260814T055917Z_4a0a16b6
+  source_file: reader_saturation.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reader_saturation
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Free-text questions do not satisfy the oracle reader's term rule.
+- claim_id: C072
+  claim_text: Reader saturation on the large synthetic store, for contrast with C071.
+  status: supported
+  research_question: RQ2
+  metric: reader_saturation
+  run_ids:
+  - experiment_matrix_v4_20261104T115543Z_e931c4ed
+  source_file: reader_saturation.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reader_saturation
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C110
+  claim_text: 'LongMemEval accuracy with a real model: transcript chunking, the strongest condition.'
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n = 100 unique queries (three seeds are replicas, D-022). Judged semantically; leakage and abstention stay deterministic.
+- claim_id: C111
+  claim_text: 'LongMemEval accuracy with a real model: the guarded layer, below full-history replay.'
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 'The paper''s main negative result: rule-based extraction fails on free dialogue.'
+- claim_id: C112
+  claim_text: 'LongMemEval accuracy with a real model: full-history replay.'
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=full_history, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: full_history
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C113
+  claim_text: 'LongMemEval accuracy with a real model: no persistent memory.'
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=no_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  value_column: accuracy
+  value_filter:
+    variant: no_memory
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: ''
+- claim_id: C114
+  claim_text: 'Reader saturation for transcript chunking with a real model: the reader can use the
+    evidence it is given.'
+  status: supported
+  research_question: RQ2
+  metric: reader_saturation
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: reader_saturation.csv
+  source_rows: variant=transcript_rag, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reader_saturation
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: transcript_rag
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Against 0.941 under the deterministic reader. A real model removes the reader as the binding
+    constraint; contrast C116.
+- claim_id: C115
+  claim_text: Monetary cost of the real-model LongMemEval run.
+  status: supported
+  research_question: RQ4
+  metric: estimated_cost_usd
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: efficiency.csv
+  source_rows: variant=guarded_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::efficiency
+  statistical_test: null
+  value_column: actual_cost_usd
+  value_filter:
+    variant: guarded_memory
+    checkpoint: cp100
+  value_format: '{:.4f}'
+  notes: 252 provider calls (177 answers, 75 judge); 173 served from the exact-request cache.
+- claim_id: C116
+  claim_text: 'Reader saturation for the guarded layer with the same real model: the model declines
+    on two thirds of answerable queries despite being given evidence.'
+  status: supported
+  research_question: RQ2
+  metric: reader_saturation
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: reader_saturation.csv
+  source_rows: variant=guarded_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::reader_saturation
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: guarded_memory
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 'Same reader as C114, four times the saturation: the evidence the guarded layer supplies
+    is not usable, which is the extraction failure rather than a reader limitation.'
+- claim_id: C900
+  claim_text: End-to-end accuracy with a real language model as the reader, using identical prompts
+    and budgets.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  notes: Closed by the gpt-5-mini run. Synthetic and repository results remain oracle-reader only
+    and stay upper bounds.
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    checkpoint: cp100
+  value_format: '{:.3f}'
+- claim_id: C901
+  claim_text: LongMemEval results for all four backends across the five question categories, with
+    a real model.
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, checkpoint=cp100
+  table_or_figure: tab:main-results
+  analysis_script: src/memcheck/reporting/metrics.py::task_utility
+  statistical_test: Wilson score interval, 95%
+  notes: 'Closed: LongMemEval ran against gpt-5-mini across all four backends, LLM-judged.'
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    checkpoint: cp100
+  value_format: '{:.3f}'
+- claim_id: C200
+  claim_text: Guarded layer accuracy at the smallest store in the size sweep (8 sessions).
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - scale_v4_008_20261104T115427Z_4dc0e2e1
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n=327 graded answers; the sweep holds failure density constant.
+- claim_id: C201
+  claim_text: Transcript-chunking accuracy at the smallest store (8 sessions).
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - scale_v4_008_20261104T115427Z_4dc0e2e1
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Nominally ahead of the guarded layer; the difference does not survive correction.
+- claim_id: C202
+  claim_text: Guarded layer accuracy at the largest store in the size sweep (64 sessions).
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - scale_v4_064_20261104T115518Z_5cb41206
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n=411 graded answers.
+- claim_id: C203
+  claim_text: Transcript-chunking accuracy at the largest store (64 sessions).
+  status: supported
+  research_question: RQ2
+  metric: accuracy
+  run_ids:
+  - scale_v4_064_20261104T115518Z_5cb41206
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: The ordering has inverted relative to the smallest store.
+- claim_id: C204
+  claim_text: Contract violations by the transcript baseline at the smallest store.
+  status: supported
+  research_question: RQ3
+  metric: contract_violations
+  run_ids:
+  - scale_v4_008_20261104T115427Z_4dc0e2e1
+  source_file: contract_violations.csv
+  source_rows: variant=transcript_rag, fault=none
+  table_or_figure: tab:leading-indicator
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: violations
+  value_filter:
+    variant: transcript_rag
+    fault: none
+  value_format: '{:.0f}'
+  notes: Accumulated at a store size where accuracy reported parity.
+- claim_id: C205
+  claim_text: Contract violations by the tombstone ablation at the smallest store.
+  status: supported
+  research_question: RQ3
+  metric: contract_violations
+  run_ids:
+  - scale_v4_008_20261104T115427Z_4dc0e2e1
+  source_file: contract_violations.csv
+  source_rows: variant=guarded_memory+abl_no_tombstones, fault=none
+  table_or_figure: tab:leading-indicator
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: violations
+  value_filter:
+    variant: guarded_memory+abl_no_tombstones
+    fault: none
+  value_format: '{:.0f}'
+  notes: Deletion closure fails at every store size; accuracy never reliably separates.
+- claim_id: C206
+  claim_text: Supersession-ablation accuracy at the largest store (64 sessions).
+  status: supported
+  research_question: RQ4
+  metric: accuracy
+  run_ids:
+  - scale_v4_064_20261104T115518Z_5cb41206
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_supersession, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory+abl_no_supersession
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: The same ablation costs nothing measurable at 8 and 16 sessions.
+- claim_id: C207
+  claim_text: Tombstone-ablation accuracy at the largest store (64 sessions).
+  status: supported
+  research_question: RQ4
+  metric: accuracy
+  run_ids:
+  - scale_v4_064_20261104T115518Z_5cb41206
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory+abl_no_tombstones, fault=none, checkpoint=cp100
+  table_or_figure: tab:scale-verdict
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory+abl_no_tombstones
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Within 0.015 of the unablated layer despite failing deletion closure throughout.
+- claim_id: C210
+  claim_text: Guarded layer accuracy on LongMemEval with rule-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: n = 100 unique queries, judged, under gpt-5-mini; the lifecycle passed all six contracts.
+- claim_id: C211
+  claim_text: Guarded layer accuracy on LongMemEval with model-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Identical lifecycle, reader, prompts, budgets and query set; only the write policy differs.
+- claim_id: C212
+  claim_text: Transcript-chunking accuracy on LongMemEval, model-extraction run.
+  status: supported
+  research_question: RQ1
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: The baseline has no write policy, so it is unchanged by the manipulation.
+- claim_id: C213
+  claim_text: Transcript-chunking accuracy on LongMemEval, rule-extraction run.
+  status: supported
+  research_question: RQ1
+  metric: accuracy
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: task_utility.csv
+  source_rows: variant=transcript_rag, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: mcnemar_holm
+  value_column: accuracy
+  value_filter:
+    variant: transcript_rag
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 'Compare against C212: the drift between the two bounds run-to-run non-determinism.'
+- claim_id: C214
+  claim_text: Reader saturation for the guarded layer with rule-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: reader_saturation
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: reader_saturation.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: Fraction of answerable queries the reader wrongly declined despite retrieved evidence.
+- claim_id: C215
+  claim_text: Reader saturation for the guarded layer with model-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: reader_saturation
+  run_ids:
+  - longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme
+  source_file: reader_saturation.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: reader_saturation
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: The evidence became usable; the reader and its prompt did not change.
+- claim_id: C216
+  claim_text: Knowledge-update success for the guarded layer with rule-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: update_success_rate
+  run_ids:
+  - longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme
+  source_file: memory_quality.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: update_success_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: The operation the guarded design exists to handle; 0 of 9 correct.
+- claim_id: C217
+  claim_text: Knowledge-update success for the guarded layer with model-based extraction.
+  status: supported
+  research_question: RQ1
+  metric: update_success_rate
+  run_ids:
+  - longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme
+  source_file: memory_quality.csv
+  source_rows: variant=guarded_memory, fault=none, checkpoint=cp100
+  table_or_figure: tab:extraction
+  analysis_script: src/memcheck/reporting/metrics.py
+  statistical_test: null
+  value_column: update_success_rate
+  value_filter:
+    variant: guarded_memory
+    fault: none
+    checkpoint: cp100
+  value_format: '{:.3f}'
+  notes: 6 of 9 correct with the same supersession machinery and a different write policy.

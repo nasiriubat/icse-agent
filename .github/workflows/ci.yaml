@@ -1,0 +1,121 @@
+name: ci
+
+# CI must pass with no API keys and no network access to a model provider.
+# Every job below uses the deterministic mock reader.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Belt and braces: even if a secret were configured, paid runs stay blocked in CI.
+  ALLOW_PAID_RUNS: "false"
+  MAX_EXPERIMENT_COST_USD: "0"
+
+jobs:
+  quality:
+    name: lint, types, tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Create the environment
+        run: |
+          uv venv --python ${{ matrix.python-version }}
+          uv pip install -e ".[dev,parquet]"
+
+      - name: Ruff
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+        continue-on-error: true
+
+      - name: mypy
+        run: uv run mypy src
+
+      - name: Tests
+        run: uv run pytest -q --cov=memcheck --cov-report=term-missing
+
+      - name: Assert no credential is present
+        run: |
+          test -z "${ANTHROPIC_API_KEY:-}" || (echo "CI must not carry provider credentials" && exit 1)
+          test -z "${OPENAI_API_KEY:-}" || (echo "CI must not carry provider credentials" && exit 1)
+
+  smoke:
+    name: smoke experiment and report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Create the environment
+        run: |
+          uv venv --python 3.12
+          uv pip install -e ".[dev,parquet]"
+
+      - name: Doctor
+        run: uv run memcheck doctor
+
+      - name: Demo
+        run: uv run memcheck demo
+
+      - name: Contracts hold for the guarded backend
+        run: uv run memcheck validate --backend guarded_memory
+
+      - name: Contracts detect the transcript baseline's violations
+        run: |
+          if uv run memcheck validate --backend transcript_rag; then
+            echo "expected contract violations for transcript_rag but the command succeeded"
+            exit 1
+          fi
+
+      - name: Faults inject deterministically
+        run: uv run memcheck inject --fault all --backend all
+
+      - name: Smoke experiment (mock provider, free)
+        run: uv run memcheck run --config configs/smoke.yaml
+
+      - name: RepoEvolutionBench
+        run: uv run memcheck run --config configs/repo_evolution.yaml
+
+      - name: Raw results are unmodified
+        run: uv run memcheck verify-integrity --results results/raw
+
+      - name: Report
+        run: uv run memcheck report --results results/raw --paper paper
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: memcheck-smoke-artifacts
+          path: |
+            results/raw/**
+            results/processed/**
+            results/figures/**
+            results/tables/**
+            paper/generated/**
+          retention-days: 14

@@ -1,0 +1,70 @@
+# Padding control (DEVIATIONS V-023): a fixed 8-session fact stream and a fixed query set, with
+# 56 topical padding sessions appended (store of 64 sessions). Padding sessions assert
+# no fact: "topical" ones name queried attributes without a value, like the stream's own
+# distractors; "unrelated" ones share no content token with any fact. Only the padding level
+# differs across the five configurations of one style.
+name: padding_v5_topical_056
+description: >
+  Transcript chunking against the guarded store on an 8-session fact stream padded with
+  56 topical sessions; the query set is identical at every padding level.
+
+backends:
+  - transcript_rag
+  - guarded_memory
+
+workload:
+  name: synthetic_longitudinal
+  version: v5
+  params:
+    sessions: 8
+    padding_sessions: 56
+    padding_style: topical
+    facts_per_session: 4
+    distractors_per_session: 3
+    update_fraction: 0.35
+    deletion_fraction: 0.12
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 3
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+embedding:
+  provider: mock
+  identifier: hash-embed-v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  chunk_tokens: 120
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [1.00]
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 5000000
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Mock provider only, so this run is free. Analysed by scripts/padding_gap.py into
+  results/processed/padding/.

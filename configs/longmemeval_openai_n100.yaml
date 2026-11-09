@@ -1,0 +1,74 @@
+# LongMemEval against a real model. This is the run the deterministic reader cannot do:
+# under the oracle reader every backend scores identically because reader saturation is 0.94,
+# so those numbers measure the reader rather than the memory layer.
+#
+# Requires, in .env or the shell:
+#   OPENAI_API_KEY=...
+#   ALLOW_PAID_RUNS=true
+#   MAX_EXPERIMENT_COST_USD=2        (or more; the run is refused above this)
+#
+# Always dry-run first — it prints the estimate and spends nothing:
+#   uv run memcheck run --config configs/longmemeval_openai.yaml --dry-run
+name: longmemeval_openai_n100
+description: >
+  Four backends on a LongMemEval subset. The adapter maps LongMemEval question types onto
+  MemCheck's categories (single-session extraction, cross-session reasoning, temporal reasoning,
+  knowledge updates, abstention).
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations: []
+
+workload:
+  name: longmemeval
+  version: v1
+  # Start with the small oracle subset; switch to "s" or "m" once a smoke run passes.
+  subset: smoke
+  data_path: data/raw
+  params:
+    limit: 100
+
+model:
+  provider: openai
+  identifier: gpt-5-mini
+  temperature: 0.0
+  # gpt-5 reasoning tokens are charged against this budget before any content is emitted. At 256
+  # the reasoning consumed all of it and 47% of completions came back empty, so this must be
+  # generous even though the answers themselves are a few tokens long.
+  max_output_tokens: 4000
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 512
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.25, 0.50, 1.00]
+seeds: [1, 2, 3]
+repetitions: 1
+
+cost:
+  # The judge adds one call per answered query, so budget for roughly double the answer cost.
+  limit_usd: 3.00
+  pricing_file: configs/pricing.example.yaml
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Results from this run are NOT comparable with the mock-provider runs and the fairness validator
+  will refuse to pool them, correctly: the reader differs. A real-model comparison means every
+  backend under the same real model, which is what this configuration does.

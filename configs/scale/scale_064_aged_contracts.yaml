@@ -1,0 +1,79 @@
+# The 64-session sweep point with every contract run on the *aged* store instead of a fresh one.
+#
+# Identical to `scale_064.yaml` except `contract_store: aged`: after each condition's final
+# checkpoint the runner snapshots its grown store and each contract builds its scenario on that
+# snapshot. Five contracts use their own tenant, so the aged content reaches them only through
+# the shared index, retrieval cache and write journal; restart equivalence compares the whole
+# record set before and after a restart and so checks the grown store directly (DECISIONS D-029).
+name: scale_064_aged_contracts
+description: >
+  Four backends plus the supersession and tombstone ablations on a 64-session synthetic
+  longitudinal workload, with the lifecycle contracts executed on snapshots of the grown
+  stores rather than on empty ones.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations:
+  - abl_no_supersession
+  - abl_no_tombstones
+
+workload:
+  name: synthetic_longitudinal
+  version: v2
+  params:
+    sessions: 64
+    facts_per_session: 4
+    distractors_per_session: 3
+    update_fraction: 0.35
+    deletion_fraction: 0.12
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 3
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+embedding:
+  provider: mock
+  identifier: hash-embed-v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  chunk_tokens: 120
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+contract_store: aged
+
+checkpoints: [0.10, 0.25, 0.50, 0.75, 1.00]
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 5000000
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Mock provider only, so this run is free. Its accuracy results duplicate `scale_v2_064`; only
+  the contract results differ in meaning, and they are read beside the fresh-store results of
+  that run.

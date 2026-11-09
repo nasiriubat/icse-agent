@@ -1,0 +1,62 @@
+# LongMemEval. Requires a licensed download that MemCheck does not redistribute.
+# See data/README.md, then:
+#   uv run memcheck data verify --dataset longmemeval --register
+name: longmemeval
+description: >
+  Four backends on a LongMemEval subset. The adapter maps LongMemEval question types onto
+  MemCheck's categories (single-session extraction, cross-session reasoning, temporal reasoning,
+  knowledge updates, abstention).
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations: []
+
+workload:
+  name: longmemeval
+  version: v1
+  # Start with the small oracle subset; switch to "s" or "m" once a smoke run passes.
+  subset: smoke
+  data_path: data/raw
+  params:
+    limit: 20
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 256
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 512
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.25, 0.50, 1.00]
+seeds: [1, 2, 3]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Switch model.provider to anthropic or openai only with ALLOW_PAID_RUNS=true and a positive
+  MAX_EXPERIMENT_COST_USD. The deterministic mock reader measures the memory layer; a real model
+  is needed before any claim about end-to-end agent accuracy on this benchmark.

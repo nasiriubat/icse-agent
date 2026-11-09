@@ -1,0 +1,79 @@
+# One growing store, evaluated at fixed checkpoints (challenge R3; DEVIATIONS V-023).
+#
+# The size sweep compares five separately generated streams at their final size. This run
+# replays one 64-session stream per seed and asks, at 8, 16, 24, 40 and 64 sessions, what was
+# true *then*: the v3 workload derives a query set per checkpoint from the events delivered by
+# that checkpoint, so every query is answerable where it is asked. The same ten seeds, densities,
+# reader and retrieval settings as the sweep, so the two can be read side by side.
+#
+# Checkpoint fractions are snapped to session ends by the workload: 0.125 x 64 = 8 sessions, and
+# so on. Faults are excluded for the same reason as in the sweep.
+name: longitudinal_v3_064
+description: >
+  Four backends plus the supersession and tombstone ablations on one 64-session synthetic
+  stream per seed, evaluated at 8, 16, 24, 40 and 64 sessions with checkpoint-relative gold.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations:
+  - abl_no_supersession
+  - abl_no_tombstones
+
+workload:
+  name: synthetic_longitudinal
+  version: v3
+  params:
+    sessions: 64
+    facts_per_session: 4
+    distractors_per_session: 3
+    update_fraction: 0.35
+    deletion_fraction: 0.12
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 3
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+embedding:
+  provider: mock
+  identifier: hash-embed-v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  chunk_tokens: 120
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.125, 0.25, 0.375, 0.625, 1.00]
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 5000000
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Mock provider only, so this run is free. Analysed by scripts/longitudinal_checkpoints.py into
+  results/processed/longitudinal/.

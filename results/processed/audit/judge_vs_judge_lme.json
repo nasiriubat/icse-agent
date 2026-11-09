@@ -1,0 +1,54 @@
+{
+  "runs": [
+    "longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme",
+    "longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme"
+  ],
+  "official_vs_judge_v1": {
+    "n": 193,
+    "agreements": 181,
+    "observed_agreement": 0.9378238341968912,
+    "cohens_kappa": 0.8336445912943543,
+    "kappa_ci95_bootstrap": [
+      0.7352537722908095,
+      0.9179538047328893
+    ],
+    "confusion_left_right": {
+      "correct/correct": 139,
+      "correct/incorrect": 7,
+      "incorrect/correct": 5,
+      "incorrect/incorrect": 42
+    }
+  },
+  "by_question_type": {
+    "abstention": {
+      "n": 51,
+      "agreements": 48,
+      "official_correct": 47,
+      "judge_v1_correct": 50
+    },
+    "default": {
+      "n": 57,
+      "agreements": 56,
+      "official_correct": 48,
+      "judge_v1_correct": 47
+    },
+    "knowledge-update": {
+      "n": 25,
+      "agreements": 25,
+      "official_correct": 13,
+      "judge_v1_correct": 13
+    },
+    "single-session-preference": {
+      "n": 43,
+      "agreements": 36,
+      "official_correct": 25,
+      "judge_v1_correct": 22
+    },
+    "temporal-reasoning": {
+      "n": 17,
+      "agreements": 16,
+      "official_correct": 13,
+      "judge_v1_correct": 12
+    }
+  }
+}

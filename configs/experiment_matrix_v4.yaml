@@ -1,0 +1,77 @@
+# Workload v4 robustness copy of configs/experiment_matrix.yaml (DEVIATIONS V-024).
+# The full local matrix: every backend, every ablation, every fault, on a larger store.
+# This is the configuration behind the growth curves (RQ2, RQ4) and the fault table (RQ1).
+name: experiment_matrix_v4
+description: >
+  Four backends plus six single-guard ablations, crossed with the six faults and a no-fault
+  control, on a synthetic longitudinal workload large enough to show growth effects.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations:
+  - abl_no_idempotency
+  - abl_no_supersession
+  - abl_no_tombstones
+  - abl_no_abstention
+  - abl_no_budget
+  - abl_no_tenant_filter
+
+workload:
+  name: synthetic_longitudinal
+  version: v4
+  params:
+    sessions: 40
+    facts_per_session: 4
+    distractors_per_session: 3
+    update_fraction: 0.35
+    deletion_fraction: 0.12
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 3
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+  - duplicate_event_delivery
+  - out_of_order_delivery
+  - interrupted_write
+  - index_loss
+  - contradictory_update
+  - deletion_during_growth
+
+contracts:
+  - all
+
+checkpoints: [0.10, 0.25, 0.50, 0.75, 1.00]
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 5000000
+
+output:
+  results_dir: results/raw
+
+notes: >
+  This matrix expands to 10 backend variants x 7 fault settings x 3 seeds = 210 conditions and
+  takes appreciably longer than the smoke run. It is still free: the provider is the mock reader.

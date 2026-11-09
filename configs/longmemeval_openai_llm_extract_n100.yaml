@@ -1,0 +1,90 @@
+# LongMemEval against a real model. This is the run the deterministic reader cannot do:
+# under the oracle reader every backend scores identically because reader saturation is 0.94,
+# so those numbers measure the reader rather than the memory layer.
+#
+# Requires, in .env or the shell:
+#   OPENAI_API_KEY=...
+#   ALLOW_PAID_RUNS=true
+#   MAX_EXPERIMENT_COST_USD=2        (or more; the run is refused above this)
+#
+# Always dry-run first — it prints the estimate and spends nothing:
+#   uv run memcheck run --config configs/longmemeval_openai.yaml --dry-run
+name: longmemeval_openai_llm_extract_n100
+description: >
+  The same four backends on the same LongMemEval subset as `longmemeval_openai.yaml`, changing
+  exactly one thing: the guarded backend's write policy is a model rather than the copula rule.
+  Everything else --- reader, prompts, budgets, retrieval, query set, checkpoints, seeds --- is
+  held constant, so a difference between the two runs is attributable to what was written.
+
+  The three baselines do not extract memories at all, so they act as a control on everything
+  else. They did *not* reproduce the rule-based run exactly --- 0, 3, and 6 of 60 queries moved
+  --- because neither a reasoning model nor the LLM judge is bit-reproducible at temperature
+  zero. That drift is the noise floor the guarded layer's shift is read against (DEVIATIONS
+  V-012), which is more useful than the exact reproduction originally expected here.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+ablations: []
+
+workload:
+  name: longmemeval
+  version: v1
+  # Start with the small oracle subset; switch to "s" or "m" once a smoke run passes.
+  subset: smoke
+  data_path: data/raw
+  params:
+    limit: 100
+
+model:
+  provider: openai
+  identifier: gpt-5-mini
+  temperature: 0.0
+  # gpt-5 reasoning tokens are charged against this budget before any content is emitted. At 256
+  # the reasoning consumed all of it and 47% of completions came back empty, so this must be
+  # generous even though the answers themselves are a few tokens long.
+  max_output_tokens: 4000
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+# The one declared difference from `longmemeval_openai.yaml`. It is recorded in the manifest as
+# `extractor_identity` and is a comparability field, so the fairness validator keeps the two runs
+# in separate groups rather than pooling them.
+extraction:
+  policy: llm
+  model_identifier: gpt-5-mini
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 512
+  min_confidence: 0.35
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.25, 0.50, 1.00]
+seeds: [1, 2, 3]
+repetitions: 1
+
+cost:
+  # Extraction is charged once per *event*, not once per query, and a LongMemEval instance
+  # carries far more events than questions --- so the write side dominates this run's cost in a
+  # way it never does for the rule-based one. Dry-run before spending.
+  limit_usd: 12.00
+  pricing_file: configs/pricing.example.yaml
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Read against `longmemeval_openai` and against nothing else. This pair isolates the write-side
+  policy while holding the lifecycle fixed; it is not a full factorial, because the baselines
+  have no write policy to vary.

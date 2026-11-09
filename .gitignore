@@ -1,0 +1,57 @@
+# Environments and secrets
+.env
+.env.local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage.xml
+
+# Benchmark data (restricted / large; see data/README.md)
+data/raw/**
+!data/raw/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+
+# Experiment outputs are reproducible artifacts; keep the tree lean by default.
+results/raw/**
+!results/raw/.gitkeep
+results/processed/**
+!results/processed/.gitkeep
+results/figures/**
+!results/figures/.gitkeep
+results/tables/**
+!results/tables/.gitkeep
+results/audit/**
+!results/audit/.gitkeep
+
+# Paper build products
+paper/*.pdf
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/generated/**
+!paper/generated/.gitkeep
+
+# Superseded raw runs kept locally for the record; not part of the artifact
+results/raw_superseded/
+
+# OS noise
+.DS_Store
+results/raw_partial/**

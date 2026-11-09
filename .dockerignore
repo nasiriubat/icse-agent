@@ -1,0 +1,48 @@
+# The host virtualenv must never enter the image: its interpreter symlinks point at paths that
+# do not exist in the container, which breaks `uv pip install` at build time.
+.venv/
+venv/
+
+.git/
+.github/
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage.xml
+
+# Secrets must never be baked into an image layer.
+.env
+.env.local
+
+# Results and data are mounted at run time, not copied in. Keeping them out also keeps the
+# build context small and the image reproducible from source alone.
+results/raw/
+results/processed/
+results/figures/
+results/tables/
+results/audit/
+data/raw/
+data/processed/
+
+paper/generated/
+paper/*.pdf
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+
+.DS_Store

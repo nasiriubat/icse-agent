@@ -1,0 +1,75 @@
+# Smoke experiment: the full pipeline at a size that finishes in seconds, with no paid provider.
+# This is the configuration `scripts/reproduce_smoke.sh` runs and the one CI exercises.
+name: smoke
+description: >
+  Four backends and one ablation on a small synthetic longitudinal workload, with no fault and
+  the duplicate-delivery fault, three seeds, and the full checkpoint schedule.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+# Declared ablations. Each disables exactly one guard; the fairness validator permits the
+# single declared difference and nothing else.
+ablations:
+  - abl_no_supersession
+  - abl_no_tombstones
+
+workload:
+  name: synthetic_longitudinal
+  version: v2
+  params:
+    sessions: 8
+    facts_per_session: 3
+    distractors_per_session: 2
+    update_fraction: 0.35
+    deletion_fraction: 0.15
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 2
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+embedding:
+  provider: mock
+  identifier: hash-embed-v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  chunk_tokens: 120
+  abstain_on_conflict: true
+
+faults:
+  - none
+  - duplicate_event_delivery
+
+contracts:
+  - all
+
+checkpoints: [0.10, 0.25, 0.50, 0.75, 1.00]
+seeds: [1, 2, 3]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 200000
+
+output:
+  results_dir: results/raw
+  keep_stdout: true
+
+notes: >
+  Mock provider only. Results measure memory-system behaviour with a perfect reader and are an
+  upper bound on end-to-end agent accuracy (DECISIONS D-006).

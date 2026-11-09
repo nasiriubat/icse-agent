@@ -1,0 +1,68 @@
+# Dated pricing table (DECISIONS D-015).
+#
+# Prices are NOT constants. Copy this file, verify every row against the vendor's published
+# pricing page on the day you run a paid experiment, and update `as_of`. MemCheck prints the
+# `as_of` date with every cost estimate, and refuses to estimate a model that has no entry here
+# rather than silently assuming zero.
+#
+# Rates are USD per 1,000,000 tokens. Keys are "<provider>:<model_identifier>".
+
+as_of: "2026-08-14"
+currency: USD
+note: >
+  Anthropic rows were transcribed from Anthropic's published first-party API rates as cached on
+  the as_of date. They are vendor-published list prices, not measured costs, and they are used
+  only for pre-run cost estimation and for converting recorded token counts into a reported USD
+  figure. No pricing figure is presented as an experimental result. OpenAI rows were transcribed
+  from OpenAI's official pricing page on the as_of date. A model with no row here raises rather
+  than being silently costed at zero.
+  Batch discounts, cache-read/write multipliers, and negotiated rates are not modelled; estimates
+  are therefore upper bounds on list-price spend.
+
+models:
+  "anthropic:claude-opus-5":
+    input_usd_per_million: 5.00
+    output_usd_per_million: 25.00
+    source: "https://platform.claude.com/docs/en/pricing"
+  "anthropic:claude-sonnet-5":
+    input_usd_per_million: 3.00
+    output_usd_per_million: 15.00
+    source: "https://platform.claude.com/docs/en/pricing"
+  "anthropic:claude-haiku-4-5":
+    input_usd_per_million: 1.00
+    output_usd_per_million: 5.00
+    source: "https://platform.claude.com/docs/en/pricing"
+
+  # OpenAI rates transcribed from the official pricing page on the as_of date. Verify them
+  # again before any paid run: these are vendor list prices that change without notice, and a
+  # stale figure here produces a wrong cost estimate, not an error.
+  "openai:gpt-5-nano":
+    input_usd_per_million: 0.05
+    output_usd_per_million: 0.40
+    source: "https://developers.openai.com/api/docs/pricing"
+  "openai:gpt-5-mini":
+    input_usd_per_million: 0.25
+    output_usd_per_million: 2.00
+    source: "https://developers.openai.com/api/docs/pricing"
+  "openai:gpt-5":
+    input_usd_per_million: 1.25
+    output_usd_per_million: 10.00
+    source: "https://developers.openai.com/api/docs/pricing"
+  "openai:gpt-4.1-mini":
+    input_usd_per_million: 0.40
+    output_usd_per_million: 1.60
+    source: "https://developers.openai.com/api/docs/pricing"
+  "openai:gpt-4.1":
+    input_usd_per_million: 2.00
+    output_usd_per_million: 8.00
+    source: "https://developers.openai.com/api/docs/pricing"
+  "openai:gpt-4o-mini":
+    input_usd_per_million: 0.15
+    output_usd_per_million: 0.60
+    source: "https://developers.openai.com/api/docs/pricing"
+  # Added 2026-11-03 for the official LongMemEval judge (DECISIONS D-025), verified that day on
+  # the gpt-4o model page: $2.50 input, $10 output per 1M tokens; default snapshot 2024-08-06.
+  "openai:gpt-4o-2024-08-06":
+    input_usd_per_million: 2.50
+    output_usd_per_million: 10.00
+    source: "https://developers.openai.com/api/docs/models/gpt-4o"

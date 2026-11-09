@@ -1,0 +1,85 @@
+# Workload v4 robustness copy of configs/scale/scale_024.yaml (DEVIATIONS V-024). Store-size sweep, point 3 of 5: 24 sessions.
+#
+# Every parameter except `sessions` is identical across the sweep, so failure *density* is held
+# constant and only the amount of accumulated history varies. That is the manipulation RQ2 needs:
+# it asks at what store size a task-accuracy benchmark acquires the power to separate designs
+# that differ in lifecycle correctness, and a sweep that also changed the fault rates could not
+# answer it.
+#
+# Faults are excluded deliberately. Fault recovery is RQ4's question and the full matrix already
+# answers it; mixing faults in here would confound store size with injected damage.
+name: scale_v4_024
+description: >
+  Four backends plus the supersession and tombstone ablations on a 24-session synthetic
+  longitudinal workload. One of five otherwise-identical configurations differing only in store
+  size.
+
+backends:
+  - no_memory
+  - full_history
+  - transcript_rag
+  - guarded_memory
+
+# Two ablations, chosen because they behave differently with scale and so replicate the
+# leading-indicator question *within* one system: removing supersession costs nothing at a small
+# store and six accuracy points at a large one, while removing tombstones never shows up in
+# accuracy at any size yet violates deletion closure at all of them.
+ablations:
+  - abl_no_supersession
+  - abl_no_tombstones
+
+workload:
+  name: synthetic_longitudinal
+  version: v4
+  params:
+    sessions: 24
+    facts_per_session: 4
+    distractors_per_session: 3
+    update_fraction: 0.35
+    deletion_fraction: 0.12
+    duplicate_fraction: 0.10
+    contradiction_fraction: 0.08
+    tenants: 3
+
+model:
+  provider: mock
+  identifier: oracle-reader-v1
+  temperature: 0.0
+  max_output_tokens: 128
+  context_limit_tokens: 8192
+  system_prompt_id: answer_v1
+
+embedding:
+  provider: mock
+  identifier: hash-embed-v1
+
+retrieval:
+  mode: lexical
+  evidence_budget: 5
+  token_budget: 256
+  min_confidence: 0.35
+  chunk_tokens: 120
+  abstain_on_conflict: true
+
+faults:
+  - none
+
+contracts:
+  - all
+
+checkpoints: [0.10, 0.25, 0.50, 0.75, 1.00]
+seeds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+repetitions: 1
+
+cost:
+  limit_usd: 0.0
+  pricing_file: configs/pricing.example.yaml
+  max_requests: 5000000
+
+output:
+  results_dir: results/raw
+
+notes: >
+  Mock provider only, so this run is free. Read alongside the other four sweep points; the
+  fairness validator keeps them in separate comparability groups, which is correct — the
+  cross-scale comparison is made deliberately by `memcheck scale`, not by pooling.
