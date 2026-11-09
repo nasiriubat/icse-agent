@@ -11,4 +11,6 @@ For each row:
 
 Then run `uv run memcheck audit --lme-agreement results/audit/lme_official_v1/audit_blind.csv --lme-key results/audit/lme_official_v1/audit_key.csv`.
 
+The `question`, `gold_answer` and `criterion` columns are quoted from LongMemEval, released under the MIT license at https://github.com/xiaowu0162/LongMemEval, and are reproduced here with attribution so the audit can be checked without the full dataset. The `model_answer` column is MemCheck's own output.
+
 The sample has 60 distinct (question, answer) pairs, 12 per question type, drawn with seed 20261103 from 193 distinct pairs in: longmemeval_openai_n100_20261021T100428Z_295868b7_rejudged_lme, longmemeval_openai_llm_extract_n100_20261022T094454Z_bc11e1d5_rejudged_lme. Answers that abstain on an answerable question are excluded, because every grader marks them incorrect.

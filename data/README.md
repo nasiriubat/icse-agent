@@ -15,13 +15,17 @@ data/
 └── checksums/    # sha256 registry for downloads (committed)
 ```
 
-Nothing under `raw/` or `processed/` is committed. `.gitignore` enforces this so a licensed
-dataset cannot be redistributed by accident.
+Nothing under `raw/` or `processed/` is committed. `.gitignore` enforces this so the full
+dataset is never redistributed by accident.
 
 ## LongMemEval
 
-LongMemEval is **not redistributed with MemCheck**. It is released by its own authors under its
-own terms, and this artifact deliberately ships the adapter without the data.
+The LongMemEval dataset is **not shipped with MemCheck**; this artifact deliberately ships the
+adapter without the data. The one exception is the human-audit sample under
+`results/audit/lme_official_v1/`, which quotes 60 questions and gold answers so that the judge
+audit can be checked without the full dataset. LongMemEval is released by its authors under the
+MIT license (https://github.com/xiaowu0162/LongMemEval; the Hugging Face releases carry the same
+tag), which permits that excerpt with attribution.
 
 ### 1. Obtain the dataset
 
